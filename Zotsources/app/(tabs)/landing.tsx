@@ -33,6 +33,7 @@ const eventsByDate: Record<string, Record<string, string>> = {
     '6:00 PM - 8:00 PM': 'Yoga class',
     },
     '2025-06-04': {
+    '9:00 AM - 10:00 AM' : 'Study Abroad Orientation',
     '11:00 AM - 3:00 PM': 'Career fair',
     '6:00 PM - 8:00 PM': 'Career fair',
     '11:59 PM': 'FAFSA Application Due',

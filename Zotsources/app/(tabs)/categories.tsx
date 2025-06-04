@@ -1,4 +1,4 @@
-    import CustomNavBar from '@/components/NavBar';
+import CustomNavBar from '@/components/NavBar';
 import Header from '@/components/header';
 import { useState } from 'react';
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -45,14 +45,14 @@ export default function Categories() {
 const [search, setSearch] = useState('');
 const [searchActive, setSearchActive] = useState(false);
 const [recentSearches, setRecentSearches] = useState([
-  "Mental health",
-  "Social events",
-  "Food resources"
+"Mental health",
+"Social events",
+"Food resources"
 ]);
 const suggestedSearches = [
-  "Graduate school workshop",
-  "Financial aid assistance",
-  "LARC tutoring"
+"Graduate school workshop",
+"Financial aid assistance",
+"LARC tutoring"
 ];
 
 const filteredCategories = CATEGORIES.filter(cat =>
@@ -71,15 +71,15 @@ const filteredCategories = CATEGORIES.filter(cat =>
         margin: 16,
         paddingHorizontal: 10,
         height: 40
-      }}>
+    }}>
         <TextInput
-          placeholder="Which resource are you looking for?"
-          value={search}
-          style={{ flex: 1 }}
-          onFocus={() => setSearchActive(true)}
-          onChangeText={setSearch}
+        placeholder="Which resource are you looking for?"
+        value={search}
+        style={{ flex: 1 }}
+        onFocus={() => setSearchActive(true)}
+        onChangeText={setSearch}
         />
-      </View>
+    </View>
 
     <Text style={styles.catTitle}>Categories</Text>
     <FlatList
@@ -120,7 +120,7 @@ const filteredCategories = CATEGORIES.filter(cat =>
         </View>
     </View>
     {searchActive && (
-      <View style={{
+    <View style={{
         position: 'absolute',
         top:75,
         left: 0,
@@ -129,90 +129,91 @@ const filteredCategories = CATEGORIES.filter(cat =>
         backgroundColor: '#fff',
         zIndex: 999,
         paddingTop: 66
-      }}>
+    }}>
         {/* Sticky search bar inside overlay */}
         <View style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: 16,
-          paddingBottom: 8,
-          backgroundColor: '#fff',
-          borderBottomWidth: 1,
-          borderColor: '#eee',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 10,
-          height: 66
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingBottom: 8,
+        backgroundColor: '#fff',
+        borderBottomWidth: 1,
+        borderColor: '#eee',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10,
+        height: 66
         }}>
-          <TouchableOpacity onPress={() => setSearchActive(false)}>
+        <TouchableOpacity onPress={() => setSearchActive(false)}>
             <Text style={{fontSize: 22, color: '#065DAB', marginRight: 10}}>←</Text>
-          </TouchableOpacity>
-          <TextInput
+        </TouchableOpacity>
+        <TextInput
             autoFocus
             value={search}
             onChangeText={setSearch}
             placeholder="Search"
             style={{
-              flex: 1,
-              marginLeft: 8,
-              fontSize: 16
+            flex: 1,
+            marginLeft: 8,
+            fontSize: 16
             }}
             onSubmitEditing={() => setSearchActive(false)}
-          />
+        />
         </View>
         {/* Scrollable recent/suggested below */}
         <FlatList
-          style={{ marginTop: 0 }}
-          ListHeaderComponent={
+        style={{ marginTop: 0 }}
+        ListHeaderComponent={
             <>
-              {/* Recent Searches */}
-              <Text style={{marginTop: 20, marginLeft: 20, fontWeight: '600'}}>Recent Searches</Text>
-              {recentSearches.length === 0 && (
+            {/* Recent Searches */}
+            <Text style={{marginTop: 20, marginLeft: 20, fontWeight: '600'}}>Recent Searches</Text>
+            {recentSearches.length === 0 && (
                 <Text style={{marginLeft: 20, color: '#aaa'}}>No recent searches</Text>
-              )}
-              {recentSearches.map((item, idx) => (
+            )}
+            {recentSearches.map((item, idx) => (
                 <View key={idx} style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 13}}>
-                  <Image source={recentIcon} style={{ width: 18, height: 18, marginRight: 8, tintColor: '#888' }} />
-                  <TouchableOpacity onPress={() => setSearch(item)} style={{flex: 1}}>
+                <Image source={recentIcon} style={{ width: 18, height: 18, marginRight: 8, tintColor: '#888' }} />
+                <TouchableOpacity onPress={() => setSearch(item)} style={{flex: 1}}>
                     <Text style={{fontSize: 15, color: '#333'}}>{item}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                </TouchableOpacity>
+                <TouchableOpacity
                     onPress={() => setRecentSearches(recentSearches.filter((_, i) => i !== idx))}
-                  >
+                >
                     <Text style={{fontSize: 19, color: '#888', marginLeft: 10}}>×</Text>
-                  </TouchableOpacity>
+                </TouchableOpacity>
                 </View>
-              ))}
+            ))}
 
-              {/* Suggested Searches */}
-              <Text style={{marginTop: 28, marginLeft: 20, fontWeight: '600'}}>Suggested Searches</Text>
-              <View style={{
+            {/* Suggested Searches */}
+            <Text style={{marginTop: 28, marginLeft: 20, fontWeight: '600'}}>Suggested Searches</Text>
+            <View style={{
                 backgroundColor: '#F6F6F6',
                 marginHorizontal: 14,
                 borderRadius: 13,
                 paddingVertical: 7,
                 marginTop: 7,
-              }}>
+            }}>
                 {suggestedSearches.map((item, idx) => (
-                  <View key={idx} style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 8, marginVertical: 7}}>
+                <View key={idx} style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 8, marginVertical: 7}}>
                     <Image source={searchIcon} style={{ width: 18, height: 18, marginRight: 8, tintColor: '#888' }} />
                     <TouchableOpacity onPress={() => setSearch(item)} style={{flex: 1}}>
-                      <Text style={{fontSize: 15, color: '#333'}}>{item}</Text>
+                    <Text style={{fontSize: 15, color: '#333'}}>{item}</Text>
                     </TouchableOpacity>
-                  </View>
+                </View>
                 ))}
-              </View>
+            </View>
             </>
-          }
-          data={[]}
-          renderItem={null}
-          keyboardShouldPersistTaps="handled"
+        }
+        data={[]}
+        renderItem={null}
+        keyboardShouldPersistTaps="handled"
         />
-      </View>
+    </View>
     )}
-  </SafeAreaView>
+    <CustomNavBar/>
+</SafeAreaView>
 );
 }
 
