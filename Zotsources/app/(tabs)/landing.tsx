@@ -7,6 +7,7 @@ View,
 FlatList,
 } from 'react-native';
 import Header from '@/components/header';
+import CustomNavBar from '@/components/NavBar';
 
 const forYouItems = [
 {
@@ -71,6 +72,7 @@ const isToday = (date: Date) => {
 };
 
 return (
+    <>
     <View style={{ flex: 1, backgroundColor: '#065DAB' }}>
     <Header showBackButton={false} />
 
@@ -153,8 +155,12 @@ return (
             <Text style={styles.noEventText}>No events for this day</Text>
         )}
         </View>
+        
     </View>
+    
     </View>
+    <CustomNavBar/>
+    </>
 );
 }
 

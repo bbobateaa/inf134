@@ -1,3 +1,4 @@
+import CustomNavBar from '@/components/NavBar';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 

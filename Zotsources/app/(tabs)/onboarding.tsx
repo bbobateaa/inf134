@@ -65,7 +65,7 @@ return (
             );
         })}
         </View>
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/(tabs)/landing')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.replace('/(tabs)/landing')}>
             <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
     </View>
