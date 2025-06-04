@@ -1,107 +1,112 @@
-    import CustomNavBar from '@/components/NavBar';
 import { useState } from 'react';
-    import { FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-    const CATEGORIES = [
-    {
-        label: 'Academics & Studies',
-        icon: require('../../assets/images/books.png'),
-    },
-    {
-        label: 'Campus Events & Involvement',
-        icon: require('../../assets/images/party-popper.png'),
-    },
-    {
-        label: 'Career & Professional',
-        icon: require('../../assets/images/briefcase.png'),
-    },
-    {
-        label: 'Health & Wellness',
-        icon: require('../../assets/images/health-heart.png'),
-    },
-    {
-        label: 'Freebies & Discounts',
-        icon: require('../../assets/images/money.png'),
-    },
-    {
-        label: 'Food, Housing & Financial',
-        icon: require('../../assets/images/house.png'),
-    },
-    {
-        label: 'Technology & Campus Tools',
-        icon: require('../../assets/images/uci-pc.png'),
-    },
-    {
-        label: 'Diversity & Identity',
-        icon: require('../../assets/images/puzzle.png'),
-    },
-    ];
+const CATEGORIES = [
+{
+    label: 'Academics & Studies',
+    icon: require('../../assets/images/books.png'),
+},
+{
+    label: 'Campus Events & Involvement',
+    icon: require('../../assets/images/party-popper.png'),
+},
+{
+    label: 'Career & Professional',
+    icon: require('../../assets/images/briefcase.png'),
+},
+{
+    label: 'Health & Wellness',
+    icon: require('../../assets/images/health-heart.png'),
+},
+{
+    label: 'Freebies & Discounts',
+    icon: require('../../assets/images/money.png'),
+},
+{
+    label: 'Food, Housing & Financial',
+    icon: require('../../assets/images/house.png'),
+},
+{
+    label: 'Technology & Campus Tools',
+    icon: require('../../assets/images/uci-pc.png'),
+},
+{
+    label: 'Diversity & Identity',
+    icon: require('../../assets/images/puzzle.png'),
+},
+];
 
-    export default function Categories() {
-    const [search, setSearch] = useState('');
+const recentIcon = require('../../assets/images/recent.png');
+const searchIcon = require('../../assets/images/search.png');
 
-    const filteredCategories = CATEGORIES.filter(cat =>
-        cat.label.toLowerCase().includes(search.toLowerCase())
-    );
+export default function Categories() {
+const [search, setSearch] = useState('');
+const [searchActive, setSearchActive] = useState(false);
+const [recentSearches, setRecentSearches] = useState([
+  "Mental health",
+  "Social events",
+  "Food resources"
+]);
+const suggestedSearches = [
+  "Graduate school workshop",
+  "Financial aid assistance",
+  "LARC tutoring"
+];
 
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
-        <View style={styles.header}>
-            <Text style={styles.headerText}>Categories</Text>
-        </View>
+const filteredCategories = CATEGORIES.filter(cat =>
+    cat.label.toLowerCase().includes(search.toLowerCase())
+);
 
-        <View style={styles.searchRow}>
-            <TextInput
-            style={styles.searchInput}
-            placeholder="Which resource are you looking for?"
-            value={search}
-            onChangeText={setSearch}
-            placeholderTextColor="#B0B0B0"
-            />
-        </View>
+return (
+  <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
+    <View style={styles.header}>
+        <Text style={styles.headerText}>Categories</Text>
+    </View>
 
-        <Text style={styles.catTitle}>Categories</Text>
-        <FlatList
-            data={filteredCategories}
-            keyExtractor={item => item.label}
-            numColumns={2}
-            columnWrapperStyle={{ justifyContent: 'space-between' }}
-            contentContainerStyle={{ paddingHorizontal: 18, paddingBottom: 8 }}
-            renderItem={({ item }) => (
-            <TouchableOpacity style={styles.catCard}>
-                <Text style={styles.catLabel}>{item.label}</Text>
-                <Image source={item.icon} style={styles.catIcon} />
-            </TouchableOpacity>
-            )}
+    <View style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        margin: 16,
+        paddingHorizontal: 10,
+        height: 40
+      }}>
+        <TextInput
+          placeholder="Which resource are you looking for?"
+          value={search}
+          style={{ flex: 1 }}
+          onFocus={() => setSearchActive(true)}
+          onChangeText={setSearch}
         />
+      </View>
 
-        <View style={styles.bottomCardsRow}>
-            {/* Student Resources Card */}
-            <View style={[styles.resourceCard, styles.blueCard]}>
-            <View style={styles.resourceHeader}>
-                <Text style={styles.resourceCardTitle}>Explore All UCI Student Resources</Text>
-                <Image source={require('../../assets/images/student-resources.png')} style={styles.resourceCardIcons} />
-            </View>
-            <TouchableOpacity style={styles.resourceBtn}>
-                <Text style={styles.resourceBtnText}>See All Resources</Text>
-            </TouchableOpacity>
-            </View>
+    <Text style={styles.catTitle}>Categories</Text>
+    <FlatList
+        data={filteredCategories}
+        keyExtractor={item => item.label}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        contentContainerStyle={{ paddingHorizontal: 18, paddingBottom: 8 }}
+        renderItem={({ item }) => (
+        <TouchableOpacity style={styles.catCard}>
+            <Text style={styles.catLabel}>{item.label}</Text>
+            <Image source={item.icon} style={styles.catIcon} />
+        </TouchableOpacity>
+        )}
+    />
 
-            {/* Resource Centers Card */}
-            <View style={[styles.resourceCard, styles.goldCard]}>
-            <View style={styles.resourceHeader}>
-                <Text style={styles.resourceCardTitle}>Explore All UCI Resource Centers</Text>
-                <Image source={require('../../assets/images/resource-center.png')} style={styles.resourceCardIcons} />
-            </View>
-            <TouchableOpacity style={styles.resourceBtn}>
-                <Text style={styles.resourceBtnTextGold}>See All Centers</Text>
-            </TouchableOpacity>
-            </View>
+    <View style={styles.bottomCardsRow}>
+        {/* Student Resources Card */}
+        <View style={[styles.resourceCard, styles.blueCard]}>
+        <View style={styles.resourceHeader}>
+            <Text style={styles.resourceCardTitle}>Explore All UCI Student Resources</Text>
+            <Image source={require('../../assets/images/student-resources.png')} style={styles.resourceCardIcons} />
         </View>
-        <CustomNavBar/>
-        </SafeAreaView>
-    );
-    }
+        <TouchableOpacity style={styles.resourceBtn}>
+            <Text style={styles.resourceBtnText}>See All Resources</Text>
+        </TouchableOpacity>
+        </View>
 
         {/* Resource Centers Card */}
         <View style={[styles.resourceCard, styles.goldCard]}>
