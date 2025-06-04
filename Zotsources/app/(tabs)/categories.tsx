@@ -1,4 +1,5 @@
     import CustomNavBar from '@/components/NavBar';
+import Header from '@/components/header';
 import { useState } from 'react';
     import { FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -46,9 +47,7 @@ import { useState } from 'react';
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#F5F5F5' }}>
-        <View style={styles.header}>
-            <Text style={styles.headerText}>Categories</Text>
-        </View>
+        <Header/>
 
         <View style={styles.searchRow}>
             <TextInput

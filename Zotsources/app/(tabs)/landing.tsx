@@ -93,17 +93,20 @@ return (
         horizontal
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 10 }}
         renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => router.push('/resource')}>
             <View style={styles.forYouCard}>
-            <Text style={styles.forYouTitle}>{item.title}</Text>
-            <Text style={styles.forYouDesc}>{item.desc}</Text>
-            <View style={styles.tagContainer}>
+                <Text style={styles.forYouTitle}>{item.title}</Text>
+                <Text style={styles.forYouDesc}>{item.desc}</Text>
+                <View style={styles.tagContainer}>
                 <Text style={styles.tagText}>{item.category}</Text>
+                </View>
+                <Text style={styles.dateText}>{item.date}</Text>
             </View>
-            <Text style={styles.dateText}>{item.date}</Text>
-            </View>
+            </TouchableOpacity>
         )}
+        
+        
         />
     </View>
 
