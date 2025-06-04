@@ -8,6 +8,7 @@ FlatList,
 } from 'react-native';
 import Header from '@/components/header';
 import CustomNavBar from '@/components/NavBar';
+import { useRouter } from 'expo-router';
 
 const forYouItems = [
 {
@@ -70,6 +71,7 @@ const isToday = (date: Date) => {
     date.getFullYear() === today.getFullYear()
     );
 };
+const router = useRouter();
 
 return (
     <>
@@ -80,9 +82,10 @@ return (
     <View style={styles.forYouContainer}>
         <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>For You</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push('/categories')}>
             <Text style={styles.seeMore}>See More &gt;</Text>
         </TouchableOpacity>
+
         </View>
 
         <FlatList

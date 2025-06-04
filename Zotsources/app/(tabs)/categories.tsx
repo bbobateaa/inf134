@@ -1,4 +1,5 @@
-    import { useState } from 'react';
+    import CustomNavBar from '@/components/NavBar';
+import { useState } from 'react';
     import { FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
     const CATEGORIES = [
@@ -97,6 +98,7 @@
             </TouchableOpacity>
             </View>
         </View>
+        <CustomNavBar/>
         </SafeAreaView>
     );
     }
