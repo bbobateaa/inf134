@@ -8,28 +8,44 @@ FlatList,
 } from 'react-native';
 import Header from '@/components/header';
 
-// Tab option cards
-const tabOptions = [
-{ id: 'academic', label: 'Academic & Career', info: 'Info about Academic & Career resources...' },
-{ id: 'wellbeing', label: 'Wellbeing & Basic Needs', info: 'Info about Wellbeing & Basic Needs...' },
-{ id: 'community', label: 'Community & Engagement', info: 'Info about Community & Engagement...' },
-{ id: 'financial', label: 'Financial & Savings', info: 'Info about Financial & Savings...' },
-{ id: 'popular', label: 'Most Popular', info: 'Info about Most Popular resources...' },
+const forYouItems = [
+{
+    id: '1',
+    title: 'LARC Tutoring Program',
+    desc: 'Small group tutoring for a variety of UCI courses. Online and in-person options.',
+    category: 'Academic',
+    date: 'Fri, May 18 @ 12:00 PM',
+},
+{
+    id: '2',
+    title: 'LARC Tutoring Program',
+    desc: 'Small group tutoring for a variety of UCI courses. Online and in-person options.',
+    category: 'Community',
+    date: 'Fri, May 18 @ 12:00 PM',
+},
 ];
 
-// Dummy events keyed by date string YYYY-MM-DD
-const eventsByDate: Record<string, string[]> = {
-'2025-06-03': ['Math workshop at 3pm', 'Yoga class at 6pm'],
-'2025-06-04': ['Career fair at 1pm'],
+const eventsByDate: Record<string, Record<string, string>> = {
+    '2025-06-03': {
+    '3:00 PM - 5:00 PM': 'Math workshop',
+    '6:00 PM - 8:00 PM': 'Yoga class',
+    },
+    '2025-06-04': {
+    '11:00 AM - 3:00 PM': 'Career fair',
+    '6:00 PM - 8:00 PM': 'Career fair',
+    '11:59 PM': 'FAFSA Application Due',
+    },
+    '2025-06-05': {
+        '6:00 PM - 8:00 PM': 'Community talk',
+    },
 };
 
-// Get week dates starting from Sunday
+
 function getWeekDates() {
 const today = new Date();
 const dayOfWeek = today.getDay();
 const sunday = new Date(today);
 sunday.setDate(today.getDate() - dayOfWeek);
-
 const dates = [];
 for (let i = 0; i < 7; i++) {
     const d = new Date(sunday);
@@ -39,19 +55,11 @@ for (let i = 0; i < 7; i++) {
 return dates;
 }
 
-// Utility to chunk array into groups of 2 (for 2 vertical rows per horizontal column)
-function chunkArray<T>(arr: T[], size: number): T[][] {
-const res: T[][] = [];
-for (let i = 0; i < arr.length; i += size) {
-    res.push(arr.slice(i, i + size));
-}
-return res;
-}
+const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
 export default function LandingPage() {
-const [selectedTab, setSelectedTab] = useState(tabOptions[0]);
 const weekDates = getWeekDates();
-const tabChunks = chunkArray(tabOptions, 2); // for card layout
+const [selectedDate, setSelectedDate] = useState(formatDate(new Date()));
 
 const isToday = (date: Date) => {
     const today = new Date();
@@ -62,108 +70,151 @@ const isToday = (date: Date) => {
     );
 };
 
-const formatDate = (date: Date) => date.toISOString().split('T')[0];
-
 return (
     <View style={{ flex: 1, backgroundColor: '#065DAB' }}>
     <Header showBackButton={false} />
 
-    {/* Card-style tab option grid (horizontally scrollable) */}
-    <View style={{ height: 250, paddingVertical: 10 }}>
+    {/* For You Section */}
+    <View style={styles.forYouContainer}>
+        <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>For You</Text>
+        <TouchableOpacity>
+            <Text style={styles.seeMore}>See More &gt;</Text>
+        </TouchableOpacity>
+        </View>
+
         <FlatList
-        data={tabChunks}
+        data={forYouItems}
         horizontal
-        keyExtractor={(_, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 10 }}
         renderItem={({ item }) => (
-            <View style={{ marginRight: 15 }}>
-            {item.map((card) => (
-                <TouchableOpacity
-                key={card.id}
-                style={styles.card}
-                onPress={() => setSelectedTab(card)}
-                >
-                <Text style={styles.cardTitle}>{card.label}</Text>
-                </TouchableOpacity>
-            ))}
+            <View style={styles.forYouCard}>
+            <Text style={styles.forYouTitle}>{item.title}</Text>
+            <Text style={styles.forYouDesc}>{item.desc}</Text>
+            <View style={styles.tagContainer}>
+                <Text style={styles.tagText}>{item.category}</Text>
+            </View>
+            <Text style={styles.dateText}>{item.date}</Text>
             </View>
         )}
         />
     </View>
 
-    {/* Upcoming events container */}
+    {/* Events Section */}
     <View style={styles.container2}>
-        <Text style={styles.upcomingTitle}>Upcoming Events This Week</Text>
-
+        <Text style={styles.upcomingTitle}>Upcoming Events</Text>
+        {/* Date Selector */}
+        <View style={{ paddingHorizontal: 10, marginBottom: 10 }}>
         <FlatList
         data={weekDates}
         horizontal
         keyExtractor={(date) => date.toISOString()}
-        contentContainerStyle={{ paddingHorizontal: 10 }}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item: date }) => {
             const dateStr = formatDate(date);
-            const events = eventsByDate[dateStr] || [];
+            const isSelected = selectedDate === dateStr;
+        
             return (
-            <View style={[styles.dateContainer, isToday(date) && styles.todayHighlight]}>
-                <Text style={styles.dateDay}>{date.toLocaleDateString('en-US', { weekday: 'short' })}</Text>
-                <Text style={styles.dateNum}>{date.getDate()}</Text>
-                {events.length > 0 ? (
-                events.map((ev, i) => (
-                    <Text key={i} style={styles.eventText}>
-                    • {ev}
-                    </Text>
-                ))
-                ) : (
-                <Text style={styles.noEventText}>No events</Text>
-                )}
-            </View>
+            <TouchableOpacity
+                onPress={() => setSelectedDate(dateStr)}
+                style={styles.dateContainer}
+            >
+                <Text style={styles.dateDay}>
+                {date.toLocaleDateString('en-US', { weekday: 'short' })}
+                </Text>
+                <View style={[styles.dateNum, isSelected && styles.todayHighlight]}>
+                <Text style={{ color: isSelected ? '#fff' : '#333', fontSize: 14, fontWeight: 'bold' }}>
+                    {date.getDate()}
+                </Text>
+                </View>
+            </TouchableOpacity>
             );
         }}
+        
         />
+        </View>
+        {/* Selected Date Events */}
+        <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
+        {eventsByDate[selectedDate] ? (
+            Object.entries(eventsByDate[selectedDate]).map(([time, event], index) => (
+                <View style={styles.eventContainer}>
+                <Text key={index} style={styles.eventTimeText}>
+                    {time}
+                </Text>
+                <Text key={index} style={styles.eventText}>
+                    {event}
+                </Text>
+                </View>
+            
+            ))
+        ) : (
+            <Text style={styles.noEventText}>No events for this day</Text>
+        )}
+        </View>
     </View>
     </View>
 );
 }
 
 const styles = StyleSheet.create({
-card: {
-    backgroundColor: '#fff',
-    width: 150,
-    height: 100,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
+forYouContainer: {
+    marginTop: 10,
 },
-cardTitle: {
-    color: '#065DAB',
-    fontWeight: '600',
-    textAlign: 'center',
-},
-tabInfoContainer: {
-    padding: 15,
+sectionHeader: {
     flexDirection: 'row',
-    backgroundColor: '#0A75D8',
-    marginHorizontal: 10,
-    borderRadius: 10,
-    minHeight: 80,
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginBottom: 5,
 },
-tabInfoText: {
+sectionTitle: {
     color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+},
+seeMore: {
+    color: '#fff',
+    fontSize: 14,
+},
+forYouCard: {
+    backgroundColor: '#fff',
+    width: 260,
+    borderRadius: 15,
+    padding: 15,
+    marginRight: 15,
+},
+forYouTitle: {
     fontSize: 16,
+    fontWeight: 'bold',
+    color: '#222',
+    marginVertical: 5,
+},
+forYouDesc: {
+    fontSize: 13,
+    color: '#555',
+    marginBottom: 8,
+},
+tagContainer: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    backgroundColor: '#065DAB',
+    borderRadius: 12,
+},
+tagText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+},
+dateText: {
+    fontSize: 12,
+    color: '#888',
 },
 container2: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: 15,
+    marginTop: 25,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     paddingVertical: 20,
@@ -175,34 +226,54 @@ upcomingTitle: {
     marginBottom: 10,
 },
 dateContainer: {
-    width: 120,
-    borderRadius: 15,
-    backgroundColor: '#F2F2F2',
-    marginHorizontal: 8,
-    padding: 10,
+    alignItems: 'center',
+    paddingVertical: 4,
+    width: 40,
+    margin: 5,
+    gap: 10
 },
+dateDay: {
+    fontSize: 15,
+    color: '#444',
+    marginBottom: 2,
+    textTransform: 'uppercase',
+},
+dateNum: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+},
+
 todayHighlight: {
     backgroundColor: '#065DAB',
 },
-dateDay: {
-    fontSize: 14,
-    color: '#333',
-    marginBottom: 5,
-    textAlign: 'center',
+
+eventContainer: {
+    borderBottomColor: '#E7E7E7',
+    borderBottomWidth: 1,
+    borderLeftColor: '#065DAB',
+    borderLeftWidth: 15,
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
+    padding: 10,
+    marginBottom: 8
 },
-dateNum: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 8,
-},
+
 eventText: {
-    fontSize: 12,
+    fontSize: 17,
     color: '#222',
+    marginBottom: 5,
+    fontWeight: 'bold',
+},
+eventTimeText: {
+    fontSize: 14,
+    color: '#222',
+    marginBottom: 5,
 },
 noEventText: {
-    fontSize: 12,
+    fontSize: 17,
     fontStyle: 'italic',
     color: '#777',
     textAlign: 'center',
