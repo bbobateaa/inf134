@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native';
+import {
+StyleSheet,
+Text,
+TouchableOpacity,
+View,
+FlatList,
+} from 'react-native';
 import Header from '@/components/header';
 
+// Tab option cards
 const tabOptions = [
 { id: 'academic', label: 'Academic & Career', info: 'Info about Academic & Career resources...' },
 { id: 'wellbeing', label: 'Wellbeing & Basic Needs', info: 'Info about Wellbeing & Basic Needs...' },
@@ -14,17 +21,15 @@ const tabOptions = [
 const eventsByDate: Record<string, string[]> = {
 '2025-06-03': ['Math workshop at 3pm', 'Yoga class at 6pm'],
 '2025-06-04': ['Career fair at 1pm'],
-// add more dates & events here
 };
 
+// Get week dates starting from Sunday
 function getWeekDates() {
 const today = new Date();
-const dayOfWeek = today.getDay(); // Sunday=0..Saturday=6
-// Get Sunday of current week
+const dayOfWeek = today.getDay();
 const sunday = new Date(today);
 sunday.setDate(today.getDate() - dayOfWeek);
 
-// Build array of 7 dates (Sunday to Saturday)
 const dates = [];
 for (let i = 0; i < 7; i++) {
     const d = new Date(sunday);
@@ -34,10 +39,19 @@ for (let i = 0; i < 7; i++) {
 return dates;
 }
 
+// Utility to chunk array into groups of 2 (for 2 vertical rows per horizontal column)
+function chunkArray<T>(arr: T[], size: number): T[][] {
+const res: T[][] = [];
+for (let i = 0; i < arr.length; i += size) {
+    res.push(arr.slice(i, i + size));
+}
+return res;
+}
+
 export default function LandingPage() {
 const [selectedTab, setSelectedTab] = useState(tabOptions[0]);
-
 const weekDates = getWeekDates();
+const tabChunks = chunkArray(tabOptions, 2); // for card layout
 
 const isToday = (date: Date) => {
     const today = new Date();
@@ -48,33 +62,34 @@ const isToday = (date: Date) => {
     );
 };
 
-const formatDate = (date: Date) => date.toISOString().split('T')[0]; // YYYY-MM-DD
+const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
 return (
     <View style={{ flex: 1, backgroundColor: '#065DAB' }}>
     <Header showBackButton={false} />
 
-    {/* Tab options */}
-    <View style={styles.optionsContainer}>
-        {tabOptions.map((tab) => {
-        const selected = tab.id === selectedTab.id;
-        return (
-            <TouchableOpacity
-            key={tab.id}
-            style={[styles.option, selected && styles.optionSelected]}
-            onPress={() => setSelectedTab(tab)}
-            >
-            <Text style={[styles.optionText, selected && styles.optionTextSelected]}>
-                {tab.label}
-            </Text>
-            </TouchableOpacity>
-        );
-        })}
-    </View>
-
-    {/* Tab info */}
-    <View style={styles.tabInfoContainer}>
-        <Text style={styles.tabInfoText}>{selectedTab.info}</Text>
+    {/* Card-style tab option grid (horizontally scrollable) */}
+    <View style={{ height: 250, paddingVertical: 10 }}>
+        <FlatList
+        data={tabChunks}
+        horizontal
+        keyExtractor={(_, index) => index.toString()}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 10 }}
+        renderItem={({ item }) => (
+            <View style={{ marginRight: 15 }}>
+            {item.map((card) => (
+                <TouchableOpacity
+                key={card.id}
+                style={styles.card}
+                onPress={() => setSelectedTab(card)}
+                >
+                <Text style={styles.cardTitle}>{card.label}</Text>
+                </TouchableOpacity>
+            ))}
+            </View>
+        )}
+        />
     </View>
 
     {/* Upcoming events container */}
@@ -113,35 +128,29 @@ return (
 }
 
 const styles = StyleSheet.create({
-optionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    backgroundColor: '#065DAB',
-    flexWrap: 'wrap',
-},
-option: {
-    borderWidth: 2,
-    borderColor: '#fff',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    marginHorizontal: 5,
-    marginVertical: 5,
-},
-optionSelected: {
+card: {
     backgroundColor: '#fff',
+    width: 150,
+    height: 100,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
 },
-optionText: {
-    color: '#fff',
-    fontSize: 14,
-},
-optionTextSelected: {
+cardTitle: {
     color: '#065DAB',
-    fontWeight: 'bold',
+    fontWeight: '600',
+    textAlign: 'center',
 },
 tabInfoContainer: {
     padding: 15,
+    flexDirection: 'row',
     backgroundColor: '#0A75D8',
     marginHorizontal: 10,
     borderRadius: 10,
